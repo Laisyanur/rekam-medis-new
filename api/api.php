@@ -50,4 +50,6 @@ if ($action === 'kabupatenkota') {
     exit;
 }
 
+
+
 echo json_encode(['error' => 'Action tidak valid']);

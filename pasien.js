@@ -4,8 +4,7 @@ $(document).ready(function () {
     function loadProvinsi() {
         $('#provinsi').html('<option value="">Memuat provinsi...</option>');
         $('#kabupatenkota').html('<option value="">-- Pilih Kabupaten/Kota --</option>').prop('disabled', true);
-        $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>').prop('disabled', true);
-
+    
         $.ajax({
             url: '/api/api.php?action=provinsi',
             method: 'GET',
@@ -30,7 +29,6 @@ $(document).ready(function () {
     $(document).on('change', '#provinsi', function () {
         const kode_prov = $(this).val();
         $('#kabupatenkota').html('<option value="">-- Pilih Kabupaten/Kota --</option>').prop('disabled', true);
-        $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>').prop('disabled', true);
         $('#alamat_lengkap').val('');
 
         if (!kode_prov) return;
@@ -55,17 +53,14 @@ $(document).ready(function () {
         });
     });
 
-    // ====== KABUPATEN -> KECAMATAN (emsifa) ======
-    
 
     // ====== GABUNGKAN JADI ALAMAT ======
-    $(document).on('change', '#provinsi, #kabupatenkota, #kecamatan', function () {
+    $(document).on('change', '#provinsi, #kabupatenkota', function () {
         const prov = $('#provinsi option:selected').text();
-        const kab  = $('#kabupatenkota option:selected').text();
-        const kec  = $('#kecamatan option:selected').text();
+        const kab  = $('#kabupatenkota option:selected').text()
 
-        if ($('#provinsi').val() && $('#kabupatenkota').val() && $('#kecamatan').val()) {
-            $('#alamat_lengkap').val(`${kec}, ${kab}, ${prov}`);
+        if ($('#provinsi').val() && $('#kabupatenkota').val()) {
+            $('#alamat_lengkap').val(`$${kab}, ${prov}`);
         }
     });
 

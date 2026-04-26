@@ -161,12 +161,6 @@ if ($bps_data && isset($bps_data['status']) && $bps_data['status'] == 'OK') {
                     <option value="">-- Pilih Kabupaten --</option>
                 </select>
             </div>
-            <div class="col-md-3">
-                <label class="form-label small fw-bold">Kecamatan</label>
-                <select id="kecamatan" class="form-control">
-                    <option value="">-- Pilih Kecamatan --</option>
-                </select>
-            </div>
             <input type="hidden" name="alamat_lengkap" id="alamat_lengkap">
             <div class="col-md-3">
                 <label class="form-label small fw-bold">Keluhan</label>
