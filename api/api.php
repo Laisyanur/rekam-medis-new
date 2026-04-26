@@ -1,6 +1,6 @@
 <?php
 // api.php - hapus seluruh auth check, ganti jadi ini saja:
-include(__DIR__ . '/koneksi.php');
+// include(__DIR__ . '/koneksi.php');
 
 header('Content-Type: application/json');
 
