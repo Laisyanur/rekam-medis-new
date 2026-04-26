@@ -1,91 +1,72 @@
 $(document).ready(function () {
-    // 1. MUAT PROVINSI (BPS)
-    function loadProvinsi() {
-        $.ajax({
-            url: 'api/api.php?action=provinsi',
-            method: 'GET',
-            success: function (res) {
-                if (res.status === 'OK') {
-                    let options = '<option value="">-- Pilih Provinsi --</option>';
-                    res.data.forEach(function (prov) {
-                        options += `<option value="${prov.domain_id}">${prov.domain_name}</option>`;
-                    });
-                    $('#provinsi').html(options);
-                }
-            }
-        });
-    }
 
-    loadProvinsi();
-
-    // 2. PROVINSI -> KABUPATEN (BPS)
-    $(document).on('change', '#provinsi', function () {
-        const kode_prov = $(this).val();
-        if (!kode_prov) {
-            $('#kabupatenkota').html('<option value="">-- Pilih Kabupaten/Kota --</option>').prop('disabled', true);
-            $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>').prop('disabled', true);
-            return;
+    // Load Provinsi dari API publik (tidak perlu backend)
+    $.ajax({
+        url: 'https://wilayah.id/api/provinces.json',
+        method: 'GET',
+        success: function (res) {
+            let options = '<option value="">-- Pilih Provinsi --</option>';
+            res.data.forEach(function (prov) {
+                options += `<option value="${prov.code}">${prov.name}</option>`;
+            });
+            $('#provinsi').html(options);
+        },
+        error: function() {
+            $('#provinsi').html('<option value="">Gagal memuat provinsi</option>');
         }
+    });
 
-        $('#kabupatenkota').html('<option value="">Memuat kabupaten...</option>').prop('disabled', true);
+    // Provinsi -> Kabupaten
+    $(document).on('change', '#provinsi', function () {
+        const code = $(this).val();
+        $('#kabupatenkota').html('<option value="">-- Pilih Kabupaten/Kota --</option>');
+        $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>');
+        if (!code) return;
+
+        $('#kabupatenkota').html('<option value="">Memuat...</option>').prop('disabled', true);
 
         $.ajax({
-            url: `api/api.php?action=kabupatenkota&kode=${kode_prov}`,
+            url: `https://wilayah.id/api/regencies/${code}.json`,
             method: 'GET',
             success: function (res) {
                 let options = '<option value="">-- Pilih Kabupaten/Kota --</option>';
-                if (res.status === 'OK' && res.data.length > 0) {
-                    res.data.forEach(function (kab) {
-                        options += `<option value="${kab.domain_id}">${kab.domain_name}</option>`;
-                    });
-                    $('#kabupatenkota').html(options).prop('disabled', false);
-                }
+                res.data.forEach(function (kab) {
+                    options += `<option value="${kab.code}">${kab.name}</option>`;
+                });
+                $('#kabupatenkota').html(options).prop('disabled', false);
             }
         });
     });
 
-    // 3. KABUPATEN -> KECAMATAN (Menggunakan API Wilayah Luar agar pasti ada datanya)
+    // Kabupaten -> Kecamatan
     $(document).on('change', '#kabupatenkota', function () {
-        const kode_kab = $(this).val(); // Contoh: 3578 (Surabaya)
-        
-        if (!kode_kab) {
-            $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>').prop('disabled', true);
-            return;
-        }
+        const code = $(this).val();
+        $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>');
+        if (!code) return;
 
-        $('#kecamatan').html('<option value="">Memuat kecamatan...</option>').prop('disabled', true);
+        $('#kecamatan').html('<option value="">Memuat...</option>').prop('disabled', true);
 
-        // Kita gunakan API emsifa karena API BPS Domain tidak menyediakan level kecamatan
         $.ajax({
-            url: `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${kode_kab}.json`,
+            url: `https://wilayah.id/api/districts/${code}.json`,
             method: 'GET',
-            success: function (data) {
+            success: function (res) {
                 let options = '<option value="">-- Pilih Kecamatan --</option>';
-                if (data && data.length > 0) {
-                    data.forEach(function (kec) {
-                        options += `<option value="${kec.id}">${kec.name}</option>`;
-                    });
-                    $('#kecamatan').html(options).prop('disabled', false);
-                } else {
-                    $('#kecamatan').html('<option value="">Kecamatan tidak ditemukan</option>');
-                }
-            },
-            error: function() {
-                $('#kecamatan').html('<option value="">Gagal memuat data</option>');
+                res.data.forEach(function (kec) {
+                    options += `<option value="${kec.code}">${kec.name}</option>`;
+                });
+                $('#kecamatan').html(options).prop('disabled', false);
             }
         });
     });
-});
 
-$(document).on('change', '#provinsi, #kabupatenkota, #kecamatan', function() {
-    // Ambil teks yang tampil (bukan value angka/ID-nya)
-    let prov = $('#provinsi option:selected').text();
-    let kab  = $('#kabupatenkota option:selected').text();
-    let kec  = $('#kecamatan option:selected').text();
-    
-    // Jangan gabungkan kalau masih tulisan "-- Pilih --"
-    if($('#provinsi').val() !== "" && $('#kabupatenkota').val() !== "" && $('#kecamatan').val() !== "") {
-        let gabung = kec + ", " + kab + ", " + prov;
-        $('#alamat_lengkap').val(gabung);
-    }
+    // Gabungkan jadi alamat_lengkap
+    $(document).on('change', '#provinsi, #kabupatenkota, #kecamatan', function () {
+        const prov = $('#provinsi option:selected').text();
+        const kab  = $('#kabupatenkota option:selected').text();
+        const kec  = $('#kecamatan option:selected').text();
+
+        if ($('#provinsi').val() && $('#kabupatenkota').val() && $('#kecamatan').val()) {
+            $('#alamat_lengkap').val(`${kec}, ${kab}, ${prov}`);
+        }
+    });
 });
