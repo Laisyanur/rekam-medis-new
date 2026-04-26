@@ -7,7 +7,7 @@ if(!isset($_SESSION['login'])){
     exit;
 }
 
-include "koneksi.php";
+include(__DIR__ . '/koneksi.php');
 
 //  Generate ID Otomatis
 $query_id = mysqli_query($conn, "SELECT id_pasien FROM pasien ORDER BY id_pasien DESC LIMIT 1");
