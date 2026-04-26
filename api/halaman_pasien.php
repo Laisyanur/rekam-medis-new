@@ -95,6 +95,7 @@ if ($bps_data && isset($bps_data['status']) && $bps_data['status'] == 'OK') {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="../pasien.js"></script>
     <style>
         /* Custom styling agar badge seragam lebarnya */
         .status-badge {
