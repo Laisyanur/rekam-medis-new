@@ -56,34 +56,7 @@ $(document).ready(function () {
     });
 
     // ====== KABUPATEN -> KECAMATAN (emsifa) ======
-    $(document).on('change', '#kabupatenkota', function () {
-        const kode_kab = $(this).val();
-        $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>').prop('disabled', true);
-        $('#alamat_lengkap').val('');
-
-        if (!kode_kab) return;
-
-        $('#kecamatan').html('<option value="">Memuat kecamatan...</option>').prop('disabled', true);
-
-        $.ajax({
-            url: `https://emsifa.github.io/api-wilayah-indonesia/api/districts/${kode_kab}.json`,
-            method: 'GET',
-            success: function (data) {
-                let options = '<option value="">-- Pilih Kecamatan --</option>';
-                if (data && data.length > 0) {
-                    data.forEach(function (kec) {
-                        options += `<option value="${kec.id}">${kec.name}</option>`;
-                    });
-                    $('#kecamatan').html(options).prop('disabled', false);
-                } else {
-                    $('#kecamatan').html('<option value="">Kecamatan tidak ditemukan</option>');
-                }
-            },
-            error: function () {
-                $('#kecamatan').html('<option value="">Gagal memuat kecamatan</option>');
-            }
-        });
-    });
+    
 
     // ====== GABUNGKAN JADI ALAMAT ======
     $(document).on('change', '#provinsi, #kabupatenkota, #kecamatan', function () {
