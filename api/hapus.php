@@ -1,8 +1,17 @@
 <?php
-include "koneksi.php";
+include(__DIR__ . '/koneksi.php');
 
-$id = $_GET['id'];
+$user = get_session();
+if (!$user) {
+    header("Location: login.php");
+    exit;
+}
 
-mysqli_query($conn, "DELETE FROM pasien WHERE id_pasien='$id'");
+$id = $_GET['id'] ?? '';
+if (!empty($id)) {
+    $id = mysqli_real_escape_string($conn, $id);
+    mysqli_query($conn, "DELETE FROM pasien WHERE id_pasien='$id'");
+}
 
 header("Location: halaman_pasien.php");
+exit;
