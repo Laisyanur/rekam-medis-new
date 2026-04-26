@@ -1,13 +1,13 @@
 <?php
-// session_start();
+
+// include DULU sebelum memanggil get_session()
+include(__DIR__ . '/koneksi.php');
 
 $user = get_session();
 if (!$user) {
     header("Location: login.php");
     exit;
 }
-
-include(__DIR__ . '/koneksi.php');
 
 //  Generate ID Otomatis
 $query_id = mysqli_query($conn, "SELECT id_pasien FROM pasien ORDER BY id_pasien DESC LIMIT 1");
