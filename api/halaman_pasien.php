@@ -126,7 +126,7 @@ if ($bps_data && isset($bps_data['status']) && $bps_data['status'] == 'OK') {
 
 <nav class="navbar navbar-dark bg-primary p-3 shadow-sm">
     <div class="container">
-        <span class="navbar-brand fw-bold"><i class="bi bi-hospital me-2"></i>Halo, <?= htmlspecialchars($_SESSION['nama']); ?></span>
+        <span class="navbar-brand fw-bold"><i class="bi bi-hospital me-2"></i>Halo, <?= htmlspecialchars($user['nama']); ?></span>
         <a href="logout.php" class="btn btn-outline-light btn-sm px-4">Logout</a>
     </div>
 </nav>
