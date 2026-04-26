@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "api/koneksi.php";
+include(__DIR__ . '/api/koneksi.php');
 
 if (isset($_POST['login'])) {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
