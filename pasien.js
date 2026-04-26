@@ -1,37 +1,39 @@
 $(document).ready(function () {
 
-    // Load Provinsi dari API publik (tidak perlu backend)
+    const BASE = 'https://emsifa.github.io/api-wilayah-indonesia/api';
+
+    // Load Provinsi
     $.ajax({
-        url: 'https://wilayah.id/api/provinces.json',
+        url: `${BASE}/provinces.json`,
         method: 'GET',
-        success: function (res) {
+        success: function (data) {
             let options = '<option value="">-- Pilih Provinsi --</option>';
-            res.data.forEach(function (prov) {
-                options += `<option value="${prov.code}">${prov.name}</option>`;
+            data.forEach(function (prov) {
+                options += `<option value="${prov.id}">${prov.name}</option>`;
             });
             $('#provinsi').html(options);
         },
-        error: function() {
+        error: function () {
             $('#provinsi').html('<option value="">Gagal memuat provinsi</option>');
         }
     });
 
     // Provinsi -> Kabupaten
     $(document).on('change', '#provinsi', function () {
-        const code = $(this).val();
+        const id = $(this).val();
         $('#kabupatenkota').html('<option value="">-- Pilih Kabupaten/Kota --</option>');
         $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>');
-        if (!code) return;
+        if (!id) return;
 
         $('#kabupatenkota').html('<option value="">Memuat...</option>').prop('disabled', true);
 
         $.ajax({
-            url: `https://wilayah.id/api/regencies/${code}.json`,
+            url: `${BASE}/regencies/${id}.json`,
             method: 'GET',
-            success: function (res) {
+            success: function (data) {
                 let options = '<option value="">-- Pilih Kabupaten/Kota --</option>';
-                res.data.forEach(function (kab) {
-                    options += `<option value="${kab.code}">${kab.name}</option>`;
+                data.forEach(function (kab) {
+                    options += `<option value="${kab.id}">${kab.name}</option>`;
                 });
                 $('#kabupatenkota').html(options).prop('disabled', false);
             }
@@ -40,19 +42,19 @@ $(document).ready(function () {
 
     // Kabupaten -> Kecamatan
     $(document).on('change', '#kabupatenkota', function () {
-        const code = $(this).val();
+        const id = $(this).val();
         $('#kecamatan').html('<option value="">-- Pilih Kecamatan --</option>');
-        if (!code) return;
+        if (!id) return;
 
         $('#kecamatan').html('<option value="">Memuat...</option>').prop('disabled', true);
 
         $.ajax({
-            url: `https://wilayah.id/api/districts/${code}.json`,
+            url: `${BASE}/districts/${id}.json`,
             method: 'GET',
-            success: function (res) {
+            success: function (data) {
                 let options = '<option value="">-- Pilih Kecamatan --</option>';
-                res.data.forEach(function (kec) {
-                    options += `<option value="${kec.code}">${kec.name}</option>`;
+                data.forEach(function (kec) {
+                    options += `<option value="${kec.id}">${kec.name}</option>`;
                 });
                 $('#kecamatan').html(options).prop('disabled', false);
             }
