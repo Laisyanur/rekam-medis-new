@@ -1,8 +1,8 @@
 <?php
-session_start();
+include(__DIR__ . '/koneksi.php');
 
-// 1. SINKRONKAN DENGAN LOGIN: Gunakan $_SESSION['login']
-if (!isset($_SESSION['login'])) {
+$user = get_session();
+if (!$user) {
     header('Content-Type: application/json');
     http_response_code(401);
     echo json_encode(['error' => 'Unauthorized - Silahkan login dulu']);
