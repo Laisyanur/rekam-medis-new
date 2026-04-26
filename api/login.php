@@ -1,4 +1,5 @@
 <?php
+// Pastikan session_start() dan include SEBELUM output apapun
 session_start();
 include(__DIR__ . '/koneksi.php');
 
@@ -8,18 +9,17 @@ if (isset($_POST['login'])) {
 
     $result = mysqli_query($conn, "SELECT * FROM users WHERE email='$email'");
 
-    if (mysqli_num_rows($result) === 1) {
+    if ($result && mysqli_num_rows($result) === 1) {
         $row = mysqli_fetch_assoc($result);
 
-        // Cek password dengan hash
         if (password_verify($password, $row['password'])) {
             $_SESSION['login'] = true;
-            $_SESSION['id'] = $row['id'];
-            $_SESSION['nama'] = $row['nama'];
-            $_SESSION['role'] = $row['role']; // Pastikan ada kolom role di table
+            // Gunakan isset agar tidak error jika kolom tidak ada
+            $_SESSION['id']   = isset($row['id']) ? $row['id'] : null;
+            $_SESSION['nama'] = isset($row['nama']) ? $row['nama'] : '';
+            $_SESSION['role'] = isset($row['role']) ? $row['role'] : '';
 
-            // Redirect ke halaman utama aplikasi kamu
-            header("Location: halaman_pasien.php"); 
+            header("Location: halaman_pasien.php");
             exit;
         } else {
             $error = "Password salah!";
