@@ -1,8 +1,8 @@
 <?php
-session_start();
+// session_start();
 
-// Cek Login
-if(!isset($_SESSION['login'])){
+$user = get_session();
+if (!$user) {
     header("Location: login.php");
     exit;
 }

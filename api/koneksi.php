@@ -24,4 +24,11 @@ mysqli_real_connect(
 if (mysqli_connect_errno()) {
     die("Koneksi gagal: " . mysqli_connect_error());
 }
+
+function get_session() {
+    if (!isset($_COOKIE['user_session'])) return null;
+    $data = json_decode(base64_decode($_COOKIE['user_session']), true);
+    if (!$data || $data['exp'] < time()) return null; // expired
+    return $data;
+}
 ?>

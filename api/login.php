@@ -1,6 +1,4 @@
 <?php
-// Pastikan session_start() dan include SEBELUM output apapun
-session_start();
 include(__DIR__ . '/koneksi.php');
 
 if (isset($_POST['login'])) {
@@ -13,11 +11,20 @@ if (isset($_POST['login'])) {
         $row = mysqli_fetch_assoc($result);
 
         if (password_verify($password, $row['password'])) {
-            $_SESSION['login'] = true;
-            // Gunakan isset agar tidak error jika kolom tidak ada
-            $_SESSION['id']   = isset($row['id']) ? $row['id'] : null;
-            $_SESSION['nama'] = isset($row['nama']) ? $row['nama'] : '';
-            $_SESSION['role'] = isset($row['role']) ? $row['role'] : '';
+            $data = base64_encode(json_encode([
+                'id'   => $row['id'] ?? null,
+                'nama' => $row['nama'] ?? '',
+                'role' => $row['role'] ?? '',
+                'exp'  => time() + 3600
+            ]));
+
+            setcookie('user_session', $data, [
+                'expires'  => time() + 3600,
+                'path'     => '/',
+                'secure'   => true,
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
 
             header("Location: halaman_pasien.php");
             exit;
