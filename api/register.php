@@ -6,7 +6,12 @@ if(isset($_POST['register'])){
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $query = "INSERT INTO users (nama, email, password) VALUES ('$nama', '$email', '$password')";
+    // Generate id_pasien otomatis dari data terakhir
+    $result = mysqli_query($conn, "SELECT MAX(id_pasien) as max_id FROM users");
+    $row = mysqli_fetch_assoc($result);
+    $id_pasien = ($row['max_id'] ?? 0) + 1;
+
+    $query = "INSERT INTO users (id_pasien, nama, email, password) VALUES ('$id_pasien', '$nama', '$email', '$password')";
     if(mysqli_query($conn, $query)){
         echo "<script>alert('Register Berhasil!'); window.location='login.php';</script>";
     } else {
