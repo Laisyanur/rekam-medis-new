@@ -9,6 +9,8 @@ if(isset($_POST['register'])){
     $query = "INSERT INTO users (nama, email, password) VALUES ('$nama', '$email', '$password')";
     if(mysqli_query($conn, $query)){
         echo "<script>alert('Register Berhasil!'); window.location='login.php';</script>";
+    } else {
+        echo "<script>alert('Register Gagal: " . mysqli_error($conn) . "');</script>";
     }
 }
 ?>
